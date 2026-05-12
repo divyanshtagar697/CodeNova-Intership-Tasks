@@ -1,0 +1,30 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+try:
+    df = pd.read_csv('cleaned_internship_data.csv')
+    df['Date'] = pd.to_datetime(df['Date'])
+except Exception as e:
+    print(f"Error loading data: {e}. Please ensure Task 01 ran successfully.")
+    exit()
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(15, 10))
+plt.subplot(2, 2, 1)
+sns.histplot(df['Price'], kde=True, color='green')
+plt.title('Price Distribution (Histogram)')
+plt.subplot(2, 2, 2)
+sns.scatterplot(data=df, x='Price', y='Units', hue='Category', s=100)
+plt.title('Relationship: Price vs. Units Sold')
+plt.subplot(2, 2, 3)
+category_revenue = df.groupby('Category')['Price'].sum()
+category_revenue.plot(kind='pie', autopct='%1.1f%%', colors=sns.color_palette('pastel'))
+plt.title('Revenue Contribution by Category')
+plt.subplot(2, 2, 4)
+df_sorted = df.sort_values('Date')
+plt.plot(df_sorted['Date'], df_sorted['Price'], marker='o', linestyle='-', color='red')
+plt.title('Price Trend Over Time')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.savefig('advanced_eda_report.png')
+print("Success: Advanced EDA Report saved as 'advanced_eda_report.png'")
+plt.show()
