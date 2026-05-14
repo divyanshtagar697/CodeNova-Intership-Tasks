@@ -1,0 +1,38 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+try:
+    df = pd.read_csv('cleaned_internship_data.csv')
+except FileNotFoundError:
+    print("Error: Run Task 01 first to generate the CSV!")
+    exit()
+X = df['Units'].values
+Y = df['Price'].values
+x_mean = X.mean()
+y_mean = Y.mean()
+numerator = 0
+denominator = 0
+for i in range(len(X)):
+    numerator += (X[i] - x_mean) * (Y[i] - y_mean)
+    denominator += (X[i] - x_mean) ** 2
+m = numerator / denominator
+c = y_mean - (m * x_mean)
+print(f"--- Model Trained from Scratch ---")
+print(f"Slope (m): {m:.4f}")
+print(f"Intercept (c): {c:.4f}")
+print(f"Regression Equation: y = {m:.2f}x + {c:.2f}")
+y_pred = m * X + c
+ssr = sum((Y - y_pred) ** 2)  
+sst = sum((Y - y_mean) ** 2)  
+r2 = 1 - (ssr / sst)
+print(f"R-Squared Score: {r2:.4f}")
+plt.figure(figsize=(10, 6))
+plt.scatter(X, Y, color='blue', label='Actual Data Points') 
+plt.plot(X, y_pred, color='red', label='Regression Line')
+plt.title('Sales Prediction: Manual Linear Regression', fontsize=14)
+plt.xlabel('Units Sold', fontsize=12)
+plt.ylabel('Price/Sales', fontsize=12)
+plt.legend()
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.savefig('manual_prediction_results.png')
+print("\nSuccess: Manual prediction chart saved as 'manual_prediction_results.png'")
+plt.show()
